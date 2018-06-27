@@ -148,6 +148,96 @@ func main() {
 
 `const greeting string = "Hello, world"`
 
+## Functions
+
+* Function signature:
+
+```go
+func addUp(x int, y int) int { // expected variables in the brackets (), after closing bracket comes the return value
+    return x + y               // if the func signature declares a return value, the func body must end in a terminating statement
+}                              // terminated function body
+```
+
+### Returning multiple values
+
+```go
+func getPrize() (int, string) {
+    i := 2
+    s := "goldfish:
+    return i, s
+}
+
+func main () {
+    quantity, prize := getPrize()
+    fmt.Printf("You won %v %v\n", quantity, prize)
+}
+```
+
+### Variadic func
+
+* Accept variable number of arguments using 3 dots (`...`)
+
+```go
+func sumNumbers(numbers...int) int {
+    ...
+}
+```
+
+### Named return values
+
+* Assign values to named variables befre they are returned
+
+* The func signature declares the variables as part of the return values
+
+```go
+func sayHi() (x, y string) {
+    x = "hello"
+    y = "world"
+    return                      // naked return statement, works if you use named return values. Returns the named variables in the same order.
+}
+```
+
+### Recursive functions
+
+* Can call themselves indefinitely or until particular condition is met
+
+* Calls itself as the result value of a terminating statement
+
+### Passing functions as values
+
+* It is possible to assign functions to a value and call them at a later date
+
+* Functions are type in Go so they can be passed to another function
+
+```go
+func main () {
+    fn := func() {
+        fmt.Println("function called")
+    }
+    fn() // function is called
+}
+```
+
+Passing func as an argument:
+
+```go
+/* recursive function */
+package main
+
+import "fmt"
+
+func anotherFunction(f func() string) string {  // sub function signature shows funct argument that returns string, receiving function also returns string
+    return f()
+}
+
+func main() {
+    fn := func() string {
+        return "function called"
+    }
+    fmt.Println(anotherFunction(fn))
+}
+```
+
 ---
 
 [@luckylittle](https://github.com/luckylittle)
