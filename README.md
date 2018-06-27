@@ -238,6 +238,134 @@ func main() {
 }
 ```
 
+## Control flow
+
+### if
+
+* Multiple `if` statements can be run one after another and they will be evaluated in the order they are in the source code.
+
+```go
+func main () {
+    b := true
+    if b {                              // evaluates whether b is true
+        fmt.Println("b is true!")       // code is executed, because b is true
+    }
+}
+```
+
+### else
+
+* If nothing else is true, run this.
+
+```go
+func main () {
+    b := false
+    if b {
+        fmt.Println("b is true!")
+    } else {
+        fmt.Println("b is false!")
+    }
+}
+```
+
+### else if
+
+```go
+func main() {
+    i := 2
+    if i == 3 {
+        fmt.Println("i is 3")
+    } else if i == 2 {
+        fmt.Println("i is 2")
+    }
+}
+```
+
+### Comparison, arithmetic operators, logical operators
+
+* Must be the same type
+
+* `==`, `!=`, `<`, `<=`, `>`, `>=`
+
+* `+`, `-`, `*`, `/`, `%`
+
+* `&&`, `||`, `!`
+
+### switch
+
+```go
+func main() {
+    i := 2
+    switch i {
+        case 2:                     // if an expression is found to be true, code is evaluated
+            fmt.Println("Two")
+        case 3:
+            fmt.Println("Three")
+        case 4:
+            fmt.Println("Four")
+        default:                    // if none of the case statements is true
+            fmt.Println("I don't know")
+    }
+}
+```
+
+### for
+
+```go
+func main() {
+    i := 0
+    for i < 10 {                  // if this is true, the code is executed
+        i++                       // incremented by one
+        fmt.Println("i is", i)
+    }                             // when i is no longer less than 10, no longer executed and loop stops
+}
+```
+
+## For with init & post
+
+* `init` = this is run only once before the first iteration
+
+* `post` = this is evaluated after each iteration
+
+```go
+func main() {
+    for i := 0;i <10;i++ {
+        fmt.Println("i is", i)
+    }
+}
+```
+
+### For with range
+
+* Can loop over data structure
+
+* Iteration starts at `0`
+
+```go
+func main() {
+    numbers := []int{1,2,3,4}                        // slice containing four integers
+    for i, n := range numbers {                      // iteration variable = i, value = n
+        fmt.Println("The index of the loop is", i)
+        fmt.Println("The value from the array is", n)
+    }
+}
+```
+
+### defer
+
+* Allows a func to be executed after surrounding func returns.
+
+* Usually cleanup operations.
+
+* If multiple `defer`s are present, they will be executed in reverse order that they were declared in the source code.
+
+```go
+func main(){
+    defer fmt.Println("I am run after the function completes")      // last
+    fmt.Println("Hello World!")                                     // first
+}
+```
+
 ---
 
 [@luckylittle](https://github.com/luckylittle)
