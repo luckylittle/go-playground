@@ -6,11 +6,90 @@
 
 ## Introduction
 
+### $GOPATH
+
+* Defaults to your home directory like so `~/go/`.
+
+* It’s easiest to think of the $GOPATH as being a workspace that contains all of your projects and dependencies.
+
+* As long as all your go code lives inside it you are going to have an easier me working with go.
+
+* You should set it yourself, so you can control the location and eventually share among multiple users:
+
 1. Configure `$GOPATH`, e.g. `mkdir -p ~/Projects/go/{bin,pkg,src};mkdir -p ~/Projects/go/src/github.com/luckylittle;echo export 'GOPATH=/home/lmaly/Projects/go' >> ~/.zshrc`.
-2. Write Hello World in `main.go` in `$GOPATH/src/github.com/luckylittle/hello/main.go`.
-3. `go build` and `./hello` inside `$GOPATH/src/github.com/luckylittle/hello/`, cleanup with `go clean`.
+2. Check the Go environment variables with `go env`.
+
+* If you look in the $GOPATH directory you will see three directories, `bin`, `pkg` and `src`. The `bin` directory is where installed binaries that have a main package are placed when you run `go install`. If you install a project without a main package it is moved into the `pkg` directory. Lastly `src` which is where you should do all your development work.
+
+* It is good idea to `PATH=$PATH:$(go env GOPATH)/bin`
+
+### Dependencies
+
+* When you use the command `go get github.com/user/repo/` what happens is that a copy of the github repository is cloned into your `$GOPATH/src/github/user/repo/` directory. `go get` works with other source control systems as well so you are not limited to git.
+
+* Inside the root of your go project dependencies are checked to exist inside the vendor directory before looking at `$GOPATH`. As such if you place your dependencies in there they will be the ones your code builds and links against. To move them into the location is thankfully simple. Install `dep` then run `dep ensure` which will inspect your code and move what is required into `vendor`. Check the `dep` docs for details on how to update/remove dependencies. Keep in mind that `dep` will place a `Gopkg.lock` and `Gopkg.toml` file in the root path for tracking these.
+
+[Go dep](https://github.com/golang/dep)
+
+### Building
+
+1. Write Hello World in `main.go` in `$GOPATH/src/github.com/luckylittle/hello/main.go`.
+2. `go build` and `./hello` inside `$GOPATH/src/github.com/luckylittle/hello/`, cleanup with `go clean`.
     or `go run main.go` which does not build `./hello` so you don't need to do `go clean`.
-4. Check the Go environment variables with `go env`.
+
+So, if you have main package:
+
+```bash
+go build   # builds the command and leaves the result in the current working directory.
+go install # builds the command in a temporary directory then moves it to $GOPATH/bin.
+```
+
+For packages:
+
+```bash
+go build   # builds your package then discards the results.
+go install # builds then installs the package in your $GOPATH/pkg directory.
+```
+
+If you want to cross compile, that is build on Linux for Windows or vice versa you can set what architecture your want to target and the OS through environment variables. You can view your defaults in go env but to change them you would do something like:
+
+```bash
+GOOS=darwin GOARCH=amd64 go build
+GOOS=windows GOARCH=amd64 go build
+GOOS=linux GOARCH=amd64 go build
+```
+
+OS Specific source code:
+
+```
+main_darwin.go
+main_linux.go
+main_windows.go
+```
+
+* Multi-stage Docker build example:
+
+```Dockerfile
+FROM golang:1.10
+COPY . /go/src/github.com/luckylittle/hello
+WORKDIR /go/src/github.com/luckylittle/hello
+RUN CGO_ENABLED=0 go build main.go
+
+FROM alpine:3.7
+RUN apk add --no-cache ca-certificates
+COPY --from=0 /go/src/github.com/luckylittle/hello .
+CMD ["./main"]
+```
+
+### Testing
+
+* To create a test file you need only create a file with `_test` as a suffix in the name. For example to create a file test you may call the file `file_test.go`.
+
+* To run all the tests:
+
+```bash
+go test ./...
+```
 
 ## Static & Dynamic Types
 
